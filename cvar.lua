@@ -34,6 +34,15 @@ function meta:Set(value)
 	self.value = value
 end
 
+local str_true, str_false = {["1"] = true}, {["0"] = false}
+
+function meta:GetBool()
+	if str_true[self.value] then return true end
+	if str_false[self.value] then return false end
+
+	return nil
+end
+
 local cvar = setmetatable({
 	list = {}
 }, {
