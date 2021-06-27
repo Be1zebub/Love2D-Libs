@@ -14,7 +14,11 @@ local meta = {}
 
 function meta:__newindex(k, v)
 	if value[k] then
-		if self.validate and self.validate(v) == false then return end
+		if self.validate then
+			local new = self.validate(v)
+			if new == false then return end
+			v = new
+		end
 
 		file.Write("cvar/".. self.id ..".dat", v, "compress")
 	end
