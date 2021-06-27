@@ -8,7 +8,6 @@ local file = {}
 local lfs = love.filesystem
 local decompress, compress = love.data.decompress, love.data.compress
 
-file.Exists = lfs.exists
 file.Append = lfs.append
 file.CreateDir = lfs.mkdir or lfs.createDirectory
 file.Delete = lfs.remove
@@ -19,6 +18,10 @@ file.Size = lfs.getSize
 file.Time = lfs.getLastModified
 
 local json, compress = {json = true}, {compress = true}
+
+function file.Exists(path)
+	return (lfs.getInfo(path)) and true or false
+end
 
 function file.Write(path, data, compress_type)
 	if compress_type then
