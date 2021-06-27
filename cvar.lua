@@ -98,7 +98,7 @@ function cvar.ValidateBool(v)
     if v == nil then return false end
     if v > 1 then v = 1 end
     if v < 0 then v = 0 end
-    return v
+    return tostring(v)
 end
 
 return cvar
