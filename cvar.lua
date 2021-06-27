@@ -89,4 +89,12 @@ function cvar:Set(name, value)
 	(cvar:GetTable(name) or {}).value = value
 end
 
+cvar.ValidateBool = function(v)
+    v = tonumber(v)
+    if v == nil then return false end
+    if v > 1 then v = 1 end
+    if v < 0 then v = 0 end
+    return v
+end
+
 return cvar
