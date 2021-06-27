@@ -1,0 +1,72 @@
+local decompress, compress = love.data.decompress, love.data.compress
+
+file.CreateDir("cvar")
+
+local value = {value = true}
+local meta = {}
+
+function meta:__newindex(k, v)
+	if value[k] then
+		if self.validate and self.validate(v) == false then return end
+
+		file.Write("cvar/".. self.id ..".dat", v, "compress")
+	end
+
+	return rawset(self, k, v)
+end
+
+function meta:Get()
+	return self.value
+end
+
+function meta:Set(value)
+	self.value = value
+end
+
+local cvar = setmetatable({
+	list = {}
+}, {
+	__call = function(self, ...)
+		return self:Register(...)
+	end
+})
+
+function cvar:GetTable(name)
+	if name then
+		return self.list[name]
+	end
+
+	return self.list
+end
+
+function cvar:Register(name, default_value, validate)
+	if self.list[name] == nil then
+		local id = compress("string", "lz4", name)
+		local path = "cvar/".. id ..".dat"
+
+		if file.Exists(path) then
+			default_value = file.Read(path, "compress")
+		elseif default_value == nil then
+			default_value = "0"
+		end
+
+		self.list[name] = setmetatable({
+			name = name,
+			id 	= id,
+			validate = validate,
+			value = value
+		}, meta)
+	end
+
+	return self.list[name]
+end
+
+function cvar:Get(name)
+	return (cvar:GetTable(name) or {}).value
+end
+
+function cvar:Set(name, value)
+	(cvar:GetTable(name) or {}).value = value
+end
+
+return cvar
