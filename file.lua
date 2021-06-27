@@ -10,7 +10,7 @@ local decompress, compress = love.data.decompress, love.data.compress
 
 file.Exists = lfs.exists
 file.Append = lfs.append
-file.CreateDir = lfs.mkdir
+file.CreateDir = lfs.mkdir or lfs.createDirectory
 file.Delete = lfs.remove
 file.Find = lfs.enumerate
 file.IsDir = lfs.isDirectory
