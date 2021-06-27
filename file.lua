@@ -36,7 +36,7 @@ function file.Write(path, data, compress_type)
 end
 
 function file.Read(path, compress_type)
-	if file.Exists(path) == false then return end
+	if file.Exists(path) == false then return "" end
 
 	local content = lfs.read(path)
 
