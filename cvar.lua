@@ -1,6 +1,8 @@
 -- incredible-gmod.ru
 -- https://github.com/Be1zebub/Love2D-Libs/blob/main/cvar.lua
 
+--!!! https://github.com/Be1zebub/Love2D-Libs/blob/main/file.lua REQUIRED !!!
+
 -- not tested yet ;d
 
 local decompress, compress = love.data.decompress, love.data.compress
