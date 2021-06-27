@@ -1,3 +1,8 @@
+-- incredible-gmod.ru
+-- https://github.com/Be1zebub/Love2D-Libs/blob/main/cvar.lua
+
+-- not tested yet ;d
+
 local decompress, compress = love.data.decompress, love.data.compress
 
 file.CreateDir("cvar")
