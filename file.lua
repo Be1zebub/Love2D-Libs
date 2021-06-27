@@ -1,13 +1,14 @@
 -- incredible-gmod.ru
 -- https://github.com/Be1zebub/Love2D-Libs/blob/main/file.lua
 
--- file.FindRecursive not tested yet ;d
+-- file.FindRecursive & compress_type in file.Write/file.Read not tested yet ;d
 
 local file = {}
+
 local lfs = love.filesystem
+local decompress, compress = love.data.decompress, love.data.compress
 
 file.Exists = lfs.exists
-file.Read = lfs.read
 file.Append = lfs.append
 file.CreateDir = lfs.mkdir
 file.Delete = lfs.remove
@@ -17,11 +18,35 @@ file.IsFile = lfs.isFile
 file.Size = lfs.getSize
 file.Time = lfs.getLastModified
 
-function file.Write(path, data)
+local json, compress = {json = true}, {compress = true}
+
+function file.Write(path, data, compress_type)
+	if compress_type then
+		if json[compress_type] then
+			data = json.encode(data) -- https://github.com/rxi/json.lua
+		elseif compress[compress_type] then
+			data = compress("string", "lz4", data)
+		end
+	end
+
 	local f = lfs.newFile(path)
 	f:open("w")
 	f:write(data)
 	f:close()
+end
+
+function file.Read(path, compress_type)
+	local content = lfs.read(path)
+
+	if compress_type then
+		if json[compress_type] then
+			content = json.decode(content) -- https://github.com/rxi/json.lua
+		elseif compress[compress_type] then
+			content = compress("string", "lz4", content)
+		end
+	end
+
+	return content
 end
 
 function file.FindRecursive(path, cback_or_data, return_data)
