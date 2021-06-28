@@ -33,8 +33,8 @@ function meta:Get()
 	return self.value
 end
 
-function meta:Set(value)
-	self._value = value
+function meta:Set(val)
+	self._value = val
 end
 
 local str_true, str_false = {["1"] = true}, {["0"] = false}
@@ -82,7 +82,7 @@ function cvar:Register(name, default_value, validate)
 			name = name,
 			id 	= id,
 			validate = validate,
-			value = value
+			value = default_value
 		}, meta)
 	end
 
