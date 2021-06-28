@@ -6,7 +6,7 @@
 local file = {}
 
 local lfs = love.filesystem
-local decompress, compress = love.data.decompress, love.data.compress
+local decode, encode = love.data.decode, love.data.encode
 
 file.Append = lfs.append
 file.CreateDir = lfs.mkdir or lfs.createDirectory
@@ -17,7 +17,7 @@ file.IsFile = lfs.isFile
 file.Size = lfs.getSize
 file.Time = lfs.getLastModified
 
-local json, compress = {json = true}, {compress = true}
+local json, base64 = {json = true}, {base64 = true}
 
 function file.Exists(path)
 	return (lfs.getInfo(path)) and true or false
@@ -27,8 +27,8 @@ function file.Write(path, data, compress_type)
 	if compress_type then
 		if json[compress_type] then
 			data = json.encode(data) -- https://github.com/rxi/json.lua
-		elseif compress[compress_type] then
-			data = compress("string", "lz4", data)
+		elseif base64[compress_type] then
+			data = encode("string", "base64", data)
 		end
 	end
 
@@ -46,8 +46,8 @@ function file.Read(path, compress_type)
 	if compress_type then
 		if json[compress_type] then
 			content = json.decode(content) -- https://github.com/rxi/json.lua
-		elseif compress[compress_type] then
-			content = compress("string", "lz4", content)
+		elseif base64[compress_type] then
+			content = decode("string", "base64", content)
 		end
 	end
 
