@@ -69,7 +69,7 @@ end
 
 function cvar:Register(name, default_value, validate)
 	if self.list[name] == nil then
-		local id = encode("string", "base64", name)
+		local id = encode("string", "hex", name)
 		local path = "cvar/".. id ..".dat"
 
 		if file.Exists(path) then
