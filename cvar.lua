@@ -5,12 +5,14 @@
 
 -- not tested yet ;d
 
-local decompress, compress = love.data.decompress, love.data.compress
+local encode = love.data.encode
 
 file.CreateDir("cvar")
 
-local value = {value = true}
+local value = {_value = true}
+
 local meta = {}
+meta.__index = meta
 
 function meta:__newindex(k, v)
 	if value[k] then
@@ -20,7 +22,8 @@ function meta:__newindex(k, v)
 			v = new
 		end
 
-		file.Write("cvar/".. self.id ..".dat", v, "compress")
+		file.Write("cvar/".. self.id ..".dat", v, "base64")
+		return rawset(self, "value", v)
 	end
 
 	return rawset(self, k, v)
@@ -31,7 +34,7 @@ function meta:Get()
 end
 
 function meta:Set(value)
-	self.value = value
+	self._value = value
 end
 
 local str_true, str_false = {["1"] = true}, {["0"] = false}
@@ -48,7 +51,8 @@ function meta:SetBool(bool)
 end
 
 local cvar = setmetatable({
-	list = {}
+	list = {},
+	meta = meta
 }, {
 	__call = function(self, ...)
 		return self:Register(...)
@@ -65,11 +69,11 @@ end
 
 function cvar:Register(name, default_value, validate)
 	if self.list[name] == nil then
-		local id = compress("string", "lz4", name)
+		local id = encode("string", "base64", name)
 		local path = "cvar/".. id ..".dat"
 
 		if file.Exists(path) then
-			default_value = file.Read(path, "compress")
+			default_value = file.Read(path, "base64")
 		elseif default_value == nil then
 			default_value = "0"
 		end
@@ -90,7 +94,7 @@ function cvar:Get(name)
 end
 
 function cvar:Set(name, value)
-	(cvar:GetTable(name) or {}).value = value
+	(cvar:GetTable(name) or {})._value = value
 end
 
 function cvar.ValidateBool(v)
